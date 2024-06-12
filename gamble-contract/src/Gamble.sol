@@ -29,21 +29,25 @@ contract Gamble is VRFConsumerBase, Ownable {
    * vrfFee: the amount of LINK to send with the request
    * vrfKeyHash: ID of public key against which randomness is generated
    */
-    // constructor(address vrfCoordinator, address linkToken, bytes32 vrfKeyHash, uint256 vrfFee)
-    // VRFConsumerBase(vrfCoordinator, linkToken) Ownable(msg.sender){
-    //     keyHash = vrfKeyHash;
-    //     fee = vrfFee;
-    //     gameStarted = false;
-    // }
-    constructor()
-    VRFConsumerBase(
-            0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B, // VRF coordinator
-            0x01BE23585060835E02B77ef475b0Cc51aA1e0709  // LINK token address
-        ) Ownable(msg.sender){
-        keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311;
-        fee = 100000000000000;
+    constructor(
+        address vrfCoordinator, 
+        address linkToken, 
+        bytes32 vrfKeyHash, 
+        uint256 vrfFee
+    )VRFConsumerBase(vrfCoordinator, linkToken) Ownable(msg.sender){
+        keyHash = vrfKeyHash;
+        fee = vrfFee;
         gameStarted = false;
     }
+    // constructor()
+    // VRFConsumerBase(
+    //         0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B, // VRF coordinator
+    //         0x01BE23585060835E02B77ef475b0Cc51aA1e0709  // LINK token address
+    //     ) Ownable(msg.sender){
+    //     keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311;
+    //     fee = 100000000000000;
+    //     gameStarted = false;
+    // }
 
     function startGame(uint8 _maxPlayers, uint256 _entryFee) public onlyOwner {
         require(!gameStarted, "Game is currently running");
