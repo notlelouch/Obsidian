@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./VRFCoordinatorV2Interface.sol";
 import "./VRFConsumerBaseV2.sol";
 
-
 contract Gamble is VRFConsumerBaseV2, Ownable {
     // Chainlink variables
     VRFCoordinatorV2Interface private immutable vrfCoordinator;
@@ -24,6 +23,7 @@ contract Gamble is VRFConsumerBaseV2, Ownable {
     event GameStarted(uint256 gameId, uint8 maxPlayers, uint256 entryFee);
     event PlayerJoined(uint256 gameId, address player);
     event GameEnded(uint256 gameId, address winner, uint256 requestId);
+    event RequestSent(uint256 requestId, uint32 numWords);
 
     constructor(
         uint256 _subscriptionId,
@@ -61,7 +61,7 @@ contract Gamble is VRFConsumerBaseV2, Ownable {
         emit PlayerJoined(gameId, msg.sender);
 
         if (players.length == maxPlayers) {
-            getRandomWinner();
+            requestRandomWords();
         }
     }
 
@@ -76,7 +76,7 @@ contract Gamble is VRFConsumerBaseV2, Ownable {
         gameStarted = false;
     }
 
-    function getRandomWinner() private returns (uint256 requestId) {
+    function requestRandomWords() private returns (uint256 requestId) {
         requestId = vrfCoordinator.requestRandomWords(
             keyHash,
             uint64(subscriptionId),
@@ -84,6 +84,7 @@ contract Gamble is VRFConsumerBaseV2, Ownable {
             callbackGasLimit,
             numWords
         );
+        emit RequestSent(requestId, numWords);
         return requestId;
     }
 
