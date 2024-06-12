@@ -2,13 +2,14 @@
 pragma solidity ^0.8.21;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "./VRFCoordinatorV2Interface.sol";
+import "./VRFConsumerBaseV2.sol";
+
 
 contract Gamble is VRFConsumerBaseV2, Ownable {
     // Chainlink variables
     VRFCoordinatorV2Interface private immutable vrfCoordinator;
-    uint64 private immutable subscriptionId;
+    uint256 private immutable subscriptionId;
     bytes32 private immutable keyHash;
     uint32 private immutable callbackGasLimit = 100000;
     uint16 private immutable requestConfirmations = 3;
@@ -22,19 +23,19 @@ contract Gamble is VRFConsumerBaseV2, Ownable {
 
     event GameStarted(uint256 gameId, uint8 maxPlayers, uint256 entryFee);
     event PlayerJoined(uint256 gameId, address player);
-    event GameEnded(uint256 gameId, address winner, uint256 randomness);
+    event GameEnded(uint256 gameId, address winner, uint256 requestId);
 
     constructor(
-        uint64 subscriptionId,
-        address vrfCoordinator,
-        bytes32 keyHash
+        uint256 _subscriptionId,
+        address _vrfCoordinator,
+        bytes32 _keyHash
     )
-        VRFConsumerBaseV2(vrfCoordinator)
-        Ownable()
+        VRFConsumerBaseV2(_vrfCoordinator)
+        Ownable(msg.sender)
     {
-        vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinator);
-        subscriptionId = subscriptionId;
-        keyHash = keyHash;
+        vrfCoordinator = VRFCoordinatorV2Interface(_vrfCoordinator);
+        subscriptionId = _subscriptionId;
+        keyHash = _keyHash;
         gameStarted = false;
     }
 
@@ -71,14 +72,15 @@ contract Gamble is VRFConsumerBaseV2, Ownable {
         (bool sent, ) = winner.call{value: address(this).balance}("");
         require(sent, "Failed to send Ether");
 
-        emit GameEnded(gameId, winner, randomWords[0]);
+        emit GameEnded(gameId, winner, requestId);
         gameStarted = false;
     }
 
     function getRandomWinner() private returns (uint256 requestId) {
         requestId = vrfCoordinator.requestRandomWords(
             keyHash,
-            subscriptionId,
+            //subscriptionId,
+            uint64(subscriptionId),
             requestConfirmations,
             callbackGasLimit,
             numWords
