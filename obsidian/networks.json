@@ -1,0 +1,8 @@
+{
+  "sepolia": {
+    "Gamble": {
+      "address": "0x4Ca2e4F8AF8D87f89a40Ccd12B745b46d89E612f",
+      "startBlock": 6094938
+    }
+  }
+}

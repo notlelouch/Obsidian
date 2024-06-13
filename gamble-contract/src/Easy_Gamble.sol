@@ -16,7 +16,7 @@ contract Gamble is Ownable {
     event PlayerJoined(uint256 gameId, address player);
     event GameEnded(uint256 gameId, address winner);
 
-    constructor()Ownable(msg.sender){
+    constructor() Ownable(msg.sender){
         gameStarted = false;
     }
 
@@ -59,3 +59,5 @@ contract Gamble is Ownable {
     receive() external payable {}
     fallback() external payable {}
 }
+
+// deployed contract address - 0x4Ca2e4F8AF8D87f89a40Ccd12B745b46d89E612f
