@@ -7,7 +7,7 @@ import { WagmiProvider } from 'wagmi';
 import {
   sepolia,
 } from 'wagmi/chains';
-import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { getDefaultConfig, RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 
 const config = getDefaultConfig({
   appName: 'RainbowKit App',
@@ -24,7 +24,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
-        <RainbowKitProvider>
+        <RainbowKitProvider theme={darkTheme({
+          accentColor: '#6c5ce7', // Darker color
+          accentColorForeground: 'white',
+          borderRadius: 'medium', // Rounder border
+          fontStack: 'system',
+          overlayBlur: 'small',
+        })}>
           <Component {...pageProps} />
         </RainbowKitProvider>
       </QueryClientProvider>
